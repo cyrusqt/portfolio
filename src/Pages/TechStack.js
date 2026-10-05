@@ -12,13 +12,11 @@ import {
   SiJavascript,
   SiTypescript,
   SiReact,
-  SiNextdotjs,
   SiFlutter,
   SiDart,
   SiPhp,
   SiLaravel,
   SiMysql,
-  SiNodedotjs,
   SiGit,
   SiGithub,
   SiTailwindcss,
@@ -35,12 +33,10 @@ const ROW_1 = [
   { name: "TypeScript", Icon: SiTypescript, color: "#3178C6" },
   { name: "Tailwind CSS", Icon: SiTailwindcss, color: "#38BDF8" },
   { name: "React", Icon: SiReact, color: "#61DAFB" },
-  { name: "Next.js", Icon: SiNextdotjs, color: "#FFFFFF" },
   { name: "Flutter", Icon: SiFlutter, color: "#02569B" },
   { name: "Dart", Icon: SiDart, color: "#0175C2" },
   { name: "PHP", Icon: SiPhp, color: "#777BB4" },
   { name: "Laravel", Icon: SiLaravel, color: "#FF2D20" },
-  { name: "Node.js", Icon: SiNodedotjs, color: "#339933" },
 ];
 
 const ROW_2 = [

@@ -7,6 +7,7 @@ import Contact from './Pages/Contact';
 import Projects from './Pages/Project';
 import { useState, useEffect } from 'react';
 import Loader from './components/Loader';
+import AnimatedBackground from './components/AnimatedBackground';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +22,7 @@ function App() {
 
   return (
     <>
+      <AnimatedBackground />
       <Loader loading={isLoading} />
       <Navbar />
       <Profile />

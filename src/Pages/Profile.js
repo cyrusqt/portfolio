@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import SocialIcons from "../components/SocialIcons";
 import HeroButtons from "../components/HeroButtons";
 import DeveloperIllustration from "../components/DeveloperIllustration";
-import FloatingCards from "../components/FloatingCards";
 import ScrollIndicator from "../components/ScrollIndicator";
+import TypingHeading from "../components/TypingHeading";
 import "./Profile.css";
 
 const container = {
@@ -37,15 +37,15 @@ function Profile() {
         <div className="hero-left">
           <motion.span className="hero-badge" variants={item}>
             <span className="hero-badge-dot" />
-            Aspiring Web Developer
+            AVAILABLE TO WORK
           </motion.span>
 
           <motion.h1 className="hero-heading" variants={item}>
-            Hi, I'm <span className="hero-accent">Cyrus.</span>
+            <TypingHeading />
           </motion.h1>
 
           <motion.p className="hero-subtitle" variants={item}>
-            Aspiring Web Developer &amp; Flutter Developer
+            Web &amp; Flutter Developer
           </motion.p>
 
           <motion.p className="hero-description" variants={item}>
@@ -64,7 +64,6 @@ function Profile() {
 
         <motion.div className="hero-right" variants={item}>
           <DeveloperIllustration />
-          <FloatingCards />
         </motion.div>
       </motion.div>
 

@@ -11,6 +11,7 @@
   width: 100%;
   height: auto;
   display: block;
+  overflow: visible;
 }
 
 .dev-glow {
@@ -19,4 +20,160 @@
   background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, rgba(59, 130, 246, 0) 70%);
   filter: blur(40px);
   z-index: 0;
+}
+
+/* Shared helpers */
+.dev-illustration .di-limb {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.di-pulse {
+  animation: di-pulse 4s ease-in-out infinite;
+}
+
+@keyframes di-pulse {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+
+/* Platform orbit ring */
+.di-orbit {
+  animation: di-orbit 14s linear infinite;
+}
+
+@keyframes di-orbit {
+  to { stroke-dashoffset: -400; }
+}
+
+/* Links between monitor and tech bubbles */
+.di-link {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.28);
+  stroke-width: 1.5;
+}
+
+.di-link-flow {
+  fill: none;
+  stroke: #60a5fa;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 2 16;
+  animation: di-flow 2.4s linear infinite;
+}
+
+@keyframes di-flow {
+  to { stroke-dashoffset: -36; }
+}
+
+.di-hub {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: di-hub 2.4s ease-in-out infinite;
+}
+
+@keyframes di-hub {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px #60a5fa); }
+  50% { transform: scale(1.35); filter: drop-shadow(0 0 8px #60a5fa); }
+}
+
+/* Tech bubbles: pop in, then float */
+.di-bubble {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: di-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.di-bubble__float {
+  animation: di-float 6s ease-in-out infinite;
+}
+
+@keyframes di-pop {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes di-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+
+/* Monitor code typing */
+.di-code {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: di-type 7s ease-out infinite backwards;
+}
+
+@keyframes di-type {
+  0% { transform: scaleX(0); opacity: 1; }
+  8%, 82% { transform: scaleX(1); opacity: 1; }
+  92%, 100% { transform: scaleX(1); opacity: 0; }
+}
+
+.di-cursor {
+  animation: di-blink 1s steps(1) infinite;
+}
+
+@keyframes di-blink {
+  50% { opacity: 0; }
+}
+
+/* Developer */
+.di-hand {
+  animation: di-typing 0.32s ease-in-out infinite alternate;
+}
+
+.di-hand--far {
+  animation-delay: 0.16s;
+}
+
+@keyframes di-typing {
+  from { transform: translateY(0); }
+  to { transform: translateY(-2.5px); }
+}
+
+.di-head {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: di-nod 5s ease-in-out infinite;
+}
+
+@keyframes di-nod {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-3deg); }
+}
+
+/* Coffee steam */
+.di-steam {
+  fill: none;
+  stroke: rgba(226, 232, 240, 0.55);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  animation: di-steam 2.6s ease-in-out infinite;
+}
+
+@keyframes di-steam {
+  0% { transform: translateY(4px); opacity: 0; }
+  40% { opacity: 1; }
+  100% { transform: translateY(-8px); opacity: 0; }
+}
+
+/* Ambient sparkles */
+.di-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: di-spark 3.6s ease-in-out infinite;
+}
+
+@keyframes di-spark {
+  0%, 100% { opacity: 0.2; transform: scale(0.7); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dev-illustration * {
+    animation: none !important;
+  }
 }

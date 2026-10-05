@@ -5,7 +5,7 @@ import avatar from "../assets/avatar.png";
 import "./About.css";
 
 const paragraphs = [
-  "I'm Cyrus, a fresh graduate from Cebu Technological University - Danao Campus and an aspiring Web Developer & Flutter Developer.",
+  "I'm Cyrus, a fresh graduate from Cebu Technological University - Danao Campus and an aspiring Web & Flutter Developer.",
   "I enjoy building clean, responsive, and user-friendly websites and mobile applications using modern technologies.",
   "I'm passionate about learning new tools, solving real-world problems, and continuously improving my development skills.",
   "I'm currently looking for opportunities where I can grow as a developer while contributing to meaningful projects.",
@@ -64,7 +64,7 @@ function About() {
           </motion.div>
 
           <motion.a
-            href="/resume/Resume.pdf"
+            href="/resume/CYRUS VINCENT D. LAURON - RESUME.pdf"
             download
             className="resume-btn"
             whileHover={{ y: -3, scale: 1.03 }}

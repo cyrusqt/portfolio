@@ -1,123 +1,258 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { SiCss, SiFlutter, SiHtml5, SiJavascript, SiPhp, SiReact } from "react-icons/si";
 import "./DeveloperIllustration.css";
 
+/* Isometric projection: t runs to the upper-right, s to the lower-right, h straight up */
+const ORIGIN = { x: 150, y: 458 };
+const iso = (t, s, h = 0) => [ORIGIN.x + 0.866 * (t + s), ORIGIN.y - 0.5 * t + 0.5 * s - h];
+const pts = (...points) => points.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+const line = (...points) =>
+  points.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
+
+// Maps flat 2D drawing coords onto a vertical face (x → t, y → down) or a horizontal face (x → t, y → s)
+const frontPlane = (t, s, h) => `matrix(0.866 -0.5 0 1 ${iso(t, s, h).join(" ")})`;
+const topPlane = (t, s, h) => `matrix(0.866 -0.5 0.866 0.5 ${iso(t, s, h).join(" ")})`;
+
+function IsoBox({ t, s, h, w, d, z, top, left, right }) {
+  return (
+    <g>
+      <polygon points={pts(iso(t, s, h), iso(t, s + d, h), iso(t, s + d, h + z), iso(t, s, h + z))} fill={left} />
+      <polygon points={pts(iso(t, s + d, h), iso(t + w, s + d, h), iso(t + w, s + d, h + z), iso(t, s + d, h + z))} fill={right} />
+      <polygon points={pts(iso(t, s, h + z), iso(t + w, s, h + z), iso(t + w, s + d, h + z), iso(t, s + d, h + z))} fill={top} />
+    </g>
+  );
+}
+
+const DESK = { top: "#cfd8f6", left: "#b3c0ec", right: "#93a5dc" };
+const CHAIR = { top: "#3b82f6", left: "#2563eb", right: "#1d4ed8" };
+
+const CODE_LINES = [
+  [10, 12, 30, "#f472b6"],
+  [44, 12, 40, "#60a5fa"],
+  [16, 21, 52, "#a78bfa"],
+  [16, 30, 34, "#34d399"],
+  [54, 30, 30, "#fbbf24"],
+  [22, 39, 62, "#60a5fa"],
+  [22, 48, 40, "#f472b6"],
+  [16, 57, 54, "#94a3b8"],
+  [10, 66, 24, "#a78bfa"],
+];
+
+const HUB = [267, 150];
+
+const BUBBLES = [
+  { Icon: SiCss, cx: 78, cy: 232, r: 30, fill: "#2965f1", shade: "#1d4ed8", icon: "#fff", float: 5.5 },
+  { Icon: SiPhp, cx: 128, cy: 122, r: 38, fill: "#777bb4", shade: "#565a94", icon: "#fff", float: 6.5 },
+  { Icon: SiHtml5, cx: 242, cy: 56, r: 30, fill: "#e34f26", shade: "#b33a18", icon: "#fff", float: 5 },
+  { Icon: SiJavascript, cx: 362, cy: 82, r: 32, fill: "#f7df1e", shade: "#c8b40c", icon: "#1f2937", float: 6 },
+  { Icon: SiReact, cx: 456, cy: 152, r: 30, fill: "#149eca", shade: "#0e7ba0", icon: "#fff", float: 7 },
+  { Icon: SiFlutter, cx: 522, cy: 252, r: 26, fill: "#027dfd", shade: "#0256b0", icon: "#fff", float: 5.8 },
+];
+
+const SPARKS = [
+  [40, 150, 2.5], [200, 120, 2], [310, 30, 2.2], [420, 60, 2.5],
+  [560, 190, 2], [500, 330, 2.4], [60, 320, 2], [300, 110, 1.8],
+];
+
+function Bubble({ Icon, cx, cy, r, fill, shade, icon, float }, i) {
+  return (
+    <g key={i} className="di-bubble" style={{ animationDelay: `${0.5 + i * 0.12}s` }}>
+      <g className="di-bubble__float" style={{ animationDuration: `${float}s`, animationDelay: `${i * -0.9}s` }}>
+        <circle cx={cx} cy={cy + 5} r={r} fill={shade} />
+        <circle cx={cx} cy={cy} r={r} fill={fill} filter="url(#di-bubbleGlow)" />
+        <ellipse cx={cx - r * 0.3} cy={cy - r * 0.45} rx={r * 0.45} ry={r * 0.2} fill="#fff" opacity="0.22" />
+        <Icon x={cx - r * 0.48} y={cy - r * 0.48} size={r * 0.96} color={icon} aria-hidden="true" />
+      </g>
+    </g>
+  );
+}
+
 function DeveloperIllustration() {
+  const [px, py] = iso(120, 90, 0);
+  const [mugX, mugY] = iso(28, 84, 88);
+
   return (
     <motion.div
       className="dev-illustration"
       role="img"
-      aria-label="Illustration of a developer working at a desk with three monitors and a laptop"
+      aria-label="Isometric illustration of a developer coding at a desk, surrounded by floating HTML, CSS, JavaScript, PHP, React and Flutter logos"
       initial={{ opacity: 0, scale: 0.92 }}
-      animate={{ opacity: 1, scale: 1, y: [0, -14, 0] }}
+      animate={{ opacity: 1, scale: 1, y: [0, -10, 0] }}
       transition={{
         opacity: { duration: 0.7, ease: "easeOut" },
         scale: { duration: 0.7, ease: "easeOut" },
-        y: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+        y: { duration: 7, repeat: Infinity, ease: "easeInOut" },
       }}
     >
       <div className="dev-glow" aria-hidden="true" />
-      <svg
-        viewBox="0 0 640 560"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-        focusable="false"
-      >
+      <svg viewBox="0 0 620 590" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
         <defs>
-          <linearGradient id="screenGlow" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1e3a8a" />
+          <linearGradient id="di-platform" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1a2b55" />
+            <stop offset="100%" stopColor="#0c1532" />
+          </linearGradient>
+          <radialGradient id="di-platformLight" cx="50%" cy="45%" r="55%">
+            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="di-deskLight" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.45" />
+            <stop offset="100%" stopColor="#60a5fa" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="di-screen" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#13234a" />
             <stop offset="100%" stopColor="#0b1224" />
           </linearGradient>
-          <linearGradient id="deskGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#141b2e" />
-            <stop offset="100%" stopColor="#0b1020" />
-          </linearGradient>
-          <linearGradient id="hoodieGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1c2436" />
-            <stop offset="100%" stopColor="#0e1424" />
-          </linearGradient>
+          <filter id="di-bubbleGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dy="4" />
+            <feComponentTransfer>
+              <feFuncA type="linear" slope="0.35" />
+            </feComponentTransfer>
+            <feMerge>
+              <feMergeNode />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
 
-        {/* Left monitor */}
-        <g transform="translate(70,150)">
-          <rect x="0" y="0" width="150" height="105" rx="10" fill="url(#screenGlow)" stroke="#3b82f6" strokeOpacity="0.5" />
-          <rect x="14" y="16" width="70" height="6" rx="3" fill="#3b82f6" opacity="0.8" />
-          <rect x="14" y="32" width="100" height="5" rx="2.5" fill="#94a3b8" opacity="0.6" />
-          <rect x="14" y="46" width="85" height="5" rx="2.5" fill="#94a3b8" opacity="0.5" />
-          <rect x="14" y="60" width="60" height="5" rx="2.5" fill="#3b82f6" opacity="0.6" />
-          <rect x="14" y="74" width="95" height="5" rx="2.5" fill="#94a3b8" opacity="0.4" />
-          <rect x="65" y="105" width="20" height="14" fill="#0b1020" />
-          <rect x="40" y="119" width="70" height="6" rx="3" fill="#141b2e" />
-        </g>
+        {/* Platform */}
+        <ellipse cx={px} cy={py + 14} rx="202" ry="117" fill="#081026" />
+        <ellipse cx={px} cy={py} rx="202" ry="117" fill="url(#di-platform)" stroke="#3b82f6" strokeOpacity="0.55" strokeWidth="1.5" />
+        <ellipse cx={px} cy={py} rx="202" ry="117" fill="url(#di-platformLight)" className="di-pulse" />
+        <ellipse cx={px} cy={py} rx="168" ry="97" fill="none" stroke="#60a5fa" strokeOpacity="0.25" />
+        <ellipse cx={px} cy={py + 4} rx="224" ry="130" fill="none" stroke="#60a5fa" strokeOpacity="0.5" strokeWidth="1.5" strokeDasharray="6 14" className="di-orbit" />
 
-        {/* Right monitor */}
-        <g transform="translate(420,150)">
-          <rect x="0" y="0" width="150" height="105" rx="10" fill="url(#screenGlow)" stroke="#3b82f6" strokeOpacity="0.5" />
-          <rect x="14" y="16" width="60" height="6" rx="3" fill="#3b82f6" opacity="0.8" />
-          <rect x="14" y="32" width="110" height="5" rx="2.5" fill="#94a3b8" opacity="0.6" />
-          <rect x="14" y="46" width="70" height="5" rx="2.5" fill="#94a3b8" opacity="0.5" />
-          <rect x="14" y="60" width="90" height="5" rx="2.5" fill="#3b82f6" opacity="0.6" />
-          <rect x="14" y="74" width="55" height="5" rx="2.5" fill="#94a3b8" opacity="0.4" />
-          <rect x="65" y="105" width="20" height="14" fill="#0b1020" />
-          <rect x="40" y="119" width="70" height="6" rx="3" fill="#141b2e" />
-        </g>
-
-        {/* Center monitor (largest) */}
-        <g transform="translate(210,110)">
-          <rect x="0" y="0" width="220" height="145" rx="12" fill="url(#screenGlow)" stroke="#3b82f6" strokeOpacity="0.6" strokeWidth="1.5" />
-          <rect x="18" y="20" width="90" height="8" rx="4" fill="#3b82f6" />
-          <rect x="18" y="40" width="150" height="6" rx="3" fill="#94a3b8" opacity="0.7" />
-          <rect x="18" y="56" width="120" height="6" rx="3" fill="#94a3b8" opacity="0.55" />
-          <rect x="18" y="72" width="160" height="6" rx="3" fill="#3b82f6" opacity="0.7" />
-          <rect x="18" y="88" width="100" height="6" rx="3" fill="#94a3b8" opacity="0.5" />
-          <rect x="18" y="104" width="140" height="6" rx="3" fill="#94a3b8" opacity="0.4" />
-          <rect x="95" y="145" width="30" height="18" fill="#0b1020" />
-          <rect x="60" y="163" width="100" height="8" rx="4" fill="#141b2e" />
-        </g>
+        {/* Tech links */}
+        <path d={line([267, 205], HUB)} className="di-link" />
+        {BUBBLES.map(({ cx, cy }, i) => {
+          const d = `M${HUB[0]} ${HUB[1]} Q${(HUB[0] + cx) / 2} ${Math.min(HUB[1], cy) - 20} ${cx} ${cy}`;
+          return (
+            <g key={i}>
+              <path d={d} className="di-link" />
+              <path d={d} className="di-link-flow" style={{ animationDelay: `${i * -0.4}s` }} />
+            </g>
+          );
+        })}
+        <circle cx={HUB[0]} cy={HUB[1]} r="5" fill="#60a5fa" className="di-hub" />
 
         {/* Desk */}
-        <rect x="20" y="330" width="600" height="16" rx="6" fill="url(#deskGrad)" />
-        <rect x="60" y="346" width="16" height="90" fill="#0b1020" />
-        <rect x="564" y="346" width="16" height="90" fill="#0b1020" />
-
-        {/* Laptop on desk */}
-        <g transform="translate(455,290)">
-          <path d="M0 40 L95 40 L110 55 L-15 55 Z" fill="#141b2e" stroke="#3b82f6" strokeOpacity="0.3" />
-          <rect x="8" y="0" width="80" height="42" rx="4" fill="url(#screenGlow)" stroke="#3b82f6" strokeOpacity="0.4" />
+        <IsoBox t={228} s={4} h={0} w={8} d={8} z={80} {...DESK} />
+        <IsoBox t={4} s={4} h={0} w={8} d={8} z={80} {...DESK} />
+        <IsoBox t={228} s={88} h={0} w={8} d={8} z={80} {...DESK} />
+        <IsoBox t={4} s={88} h={0} w={8} d={8} z={80} {...DESK} />
+        <IsoBox t={0} s={0} h={80} w={240} d={100} z={8} {...DESK} />
+        <g transform={topPlane(0, 0, 88)}>
+          <ellipse cx="112" cy="50" rx="80" ry="38" fill="url(#di-deskLight)" className="di-pulse" />
         </g>
+
+        {/* Books */}
+        <IsoBox t={8} s={28} h={88} w={34} d={24} z={6} top="#fbbf24" left="#f59e0b" right="#d97706" />
+        <IsoBox t={11} s={31} h={94} w={28} d={19} z={5} top="#67e8f9" left="#22d3ee" right="#0891b2" />
+
+        {/* Monitor */}
+        <IsoBox t={90} s={8} h={88} w={40} d={24} z={3} top="#e2e8f0" left="#cbd5e1" right="#94a3b8" />
+        <IsoBox t={105} s={12} h={91} w={10} d={6} z={30} top="#cbd5e1" left="#94a3b8" right="#64748b" />
+        <IsoBox t={50} s={20} h={110} w={120} d={5} z={95} top="#f1f5f9" left="#cbd5e1" right="#e2e8f0" />
+        <g transform={frontPlane(50, 25, 205)}>
+          <rect x="4" y="4" width="112" height="80" rx="2" fill="url(#di-screen)" />
+          <rect x="4" y="4" width="112" height="80" rx="2" fill="#3b82f6" opacity="0.08" className="di-pulse" />
+          {CODE_LINES.map(([x, y, w, color], i) => (
+            <rect
+              key={i}
+              x={x}
+              y={y}
+              width={w}
+              height="4"
+              rx="2"
+              fill={color}
+              className="di-code"
+              style={{ animationDelay: `${i * 0.35}s` }}
+            />
+          ))}
+          <rect x="38" y="65.5" width="2.5" height="5" fill="#e2e8f0" className="di-cursor" />
+          <circle cx="60" cy="89.5" r="1.8" fill="#94a3b8" />
+        </g>
+
+        {/* Keyboard + mouse */}
+        <IsoBox t={75} s={62} h={88} w={80} d={24} z={3} top="#f1f5f9" left="#cbd5e1" right="#94a3b8" />
+        <g transform={topPlane(75, 62, 91)}>
+          {Array.from({ length: 30 }, (_, k) => (
+            <rect key={k} x={5 + (k % 10) * 7.2} y={4 + Math.floor(k / 10) * 6} width="5.6" height="4.4" rx="1" fill="#cbd5e1" />
+          ))}
+        </g>
+        <IsoBox t={166} s={70} h={88} w={9} d={13} z={3} top="#f1f5f9" left="#cbd5e1" right="#94a3b8" />
 
         {/* Coffee mug */}
-        <g transform="translate(560,300)">
-          <rect x="0" y="10" width="26" height="26" rx="4" fill="#1c2436" stroke="#94a3b8" strokeOpacity="0.3" />
-          <path d="M26 16 h8 a6 6 0 0 1 0 12 h-8" fill="none" stroke="#94a3b8" strokeOpacity="0.5" strokeWidth="2" />
-        </g>
-
-        {/* Plant */}
-        <g transform="translate(40,280)">
-          <path d="M10 50 C0 20 20 5 25 30 C30 5 50 20 40 50 Z" fill="#1e3a5f" opacity="0.8" />
-          <rect x="12" y="48" width="26" height="22" rx="4" fill="#141b2e" />
-        </g>
-
-        {/* Chair */}
-        <path
-          d="M225 200 C205 220 205 260 220 300 L410 300 C425 260 425 220 405 200 Z"
-          fill="url(#hoodieGrad)"
-          opacity="0.9"
-        />
-
-        {/* Person - hoodie from behind */}
         <g>
-          <path
-            d="M250 230 C250 190 270 160 315 160 C360 160 380 190 380 230 L392 330 L238 330 Z"
-            fill="url(#hoodieGrad)"
-            stroke="#3b82f6"
-            strokeOpacity="0.15"
-          />
-          <path d="M300 168 C290 175 285 190 288 205 L342 205 C345 190 340 175 330 168 Z" fill="#0e1424" />
-          <circle cx="315" cy="172" r="26" fill="#141b2e" />
-          <path d="M255 260 C245 270 240 285 245 300 L275 300 L280 255 Z" fill="url(#hoodieGrad)" />
-          <path d="M375 260 C385 270 390 285 385 300 L355 300 L350 255 Z" fill="url(#hoodieGrad)" />
+          <path d={`M${mugX - 8} ${mugY - 14} c-8 0 -8 10 0 10`} fill="none" stroke="#e2e8f0" strokeWidth="2.5" />
+          <rect x={mugX - 8} y={mugY - 18} width="16" height="18" fill="#f1f5f9" />
+          <ellipse cx={mugX} cy={mugY} rx="8" ry="3.5" fill="#f1f5f9" />
+          <ellipse cx={mugX} cy={mugY - 18} rx="8" ry="3.5" fill="#e2e8f0" />
+          <ellipse cx={mugX} cy={mugY - 18} rx="6" ry="2.4" fill="#7c4a2d" />
+          <path d={`M${mugX - 2} ${mugY - 24} q-4 -6 0 -12 q4 -6 0 -12`} className="di-steam" />
+          <path d={`M${mugX + 3} ${mugY - 24} q-4 -6 0 -12 q4 -6 0 -12`} className="di-steam" style={{ animationDelay: "1.2s" }} />
         </g>
+
+        {/* Chair base + seat */}
+        {[[26, 0], [-26, 0], [0, 26], [0, -26]].map(([dt, ds], i) => (
+          <g key={i}>
+            <path d={line(iso(110, 155, 10), iso(110 + dt, 155 + ds, 5))} stroke="#475569" strokeWidth="4" strokeLinecap="round" />
+            <circle cx={iso(110 + dt, 155 + ds, 2)[0]} cy={iso(110 + dt, 155 + ds, 2)[1]} r="3.5" fill="#1e293b" />
+          </g>
+        ))}
+        <IsoBox t={107} s={152} h={10} w={6} d={6} z={36} top="#94a3b8" left="#64748b" right="#475569" />
+        <IsoBox t={88} s={133} h={46} w={44} d={44} z={6} {...CHAIR} />
+
+        {/* Developer */}
+        <g className="di-dev">
+          {/* far arm */}
+          <path d={line(iso(125, 141, 130), iso(127, 124, 100), iso(122, 82, 94))} className="di-limb" stroke="#e05563" strokeWidth="12" />
+          <circle cx={iso(122, 80, 94)[0]} cy={iso(122, 80, 94)[1]} r="5" fill="#eab092" className="di-hand di-hand--far" />
+
+          {/* legs */}
+          {[119, 101].map((t, i) => (
+            <g key={t}>
+              <path d={line(iso(t, 150, 62), iso(t, 102, 62), iso(t, 102, 8))} className="di-limb" stroke={i ? "#6366f1" : "#4f46e5"} strokeWidth="15" />
+              <path d={line(iso(t, 104, 4), iso(t, 90, 4))} className="di-limb" stroke="#f97316" strokeWidth="9" />
+            </g>
+          ))}
+
+          {/* torso */}
+          <path d={line(iso(110, 150, 70), iso(110, 141, 124))} className="di-limb" stroke="#fb7185" strokeWidth="34" />
+          <path d={line(iso(96, 141, 128), iso(124, 141, 128))} className="di-limb" stroke="#fb7185" strokeWidth="18" />
+
+          {/* head */}
+          <g className="di-head">
+            <path d={line(iso(110, 139, 132), iso(110, 138, 150))} className="di-limb" stroke="#eab092" strokeWidth="9" />
+            <circle cx={iso(110, 137, 164)[0]} cy={iso(110, 137, 164)[1]} r="15" fill="#f5c6a5" />
+            <circle cx={iso(112, 140, 167)[0]} cy={iso(112, 140, 167)[1]} r="15" fill="#6b4228" />
+            <circle cx={iso(104, 139, 161)[0]} cy={iso(104, 139, 161)[1]} r="3" fill="#eab092" />
+          </g>
+
+          {/* near arm */}
+          <path d={line(iso(95, 141, 130), iso(93, 124, 100), iso(98, 82, 94))} className="di-limb" stroke="#fb7185" strokeWidth="12" />
+          <circle cx={iso(98, 80, 94)[0]} cy={iso(98, 80, 94)[1]} r="5" fill="#f5c6a5" className="di-hand" />
+        </g>
+
+        {/* Chair backrest (in front of the developer's back) */}
+        <IsoBox t={107} s={176} h={52} w={6} d={4} z={22} top="#94a3b8" left="#64748b" right="#475569" />
+        <g transform={frontPlane(86, 174, 152)}>
+          <rect x="0" y="0" width="48" height="72" rx="13" fill={CHAIR.right} />
+        </g>
+        <g transform={frontPlane(86, 178, 150)}>
+          <rect x="0" y="0" width="48" height="72" rx="13" fill={CHAIR.top} />
+          <rect x="8" y="8" width="32" height="56" rx="9" fill={CHAIR.left} opacity="0.55" />
+        </g>
+
+        {/* Sparkles */}
+        {SPARKS.map(([x, y, r], i) => (
+          <circle key={i} cx={x} cy={y} r={r} fill="#93c5fd" className="di-spark" style={{ animationDelay: `${i * 0.6}s` }} />
+        ))}
+
+        {/* Tech bubbles */}
+        {BUBBLES.map(Bubble)}
       </svg>
     </motion.div>
   );

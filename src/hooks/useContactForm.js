@@ -57,7 +57,8 @@ export function useContactForm() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to send message.");
+        const reason = typeof data.error === "string" ? data.error : data.error?.message;
+        throw new Error(reason || `Failed to send message (error ${res.status}).`);
       }
 
       setStatus("success");
